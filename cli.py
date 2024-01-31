@@ -2,6 +2,7 @@ import click
 from utils.group import operation_group
 from utils.user import add_user, delete_user, user_operation_group, give_admin_user
 from utils.folder import create_folder, folder_permission
+from utils.file import create_file, delete_file, set_permission
 from utils.validators import validate_mode_file
 
 
@@ -62,6 +63,21 @@ def check_permission_command(path):
     folder_permission(path)
 
 
+@click.command(name='file', help='File operations')
+@click.option('--operation', type=click.Choice(['create', 'delete', 'set-permission'], case_sensitive=False), required=True)
+@click.argument('path')
+@click.option('--content', help='File content (only for "create" operation')
+@click.option('--permissions', help='Access rights (only for "set-permission" operation')
+def file_command(operation, path, content=None, permissions=None):
+    if operation == 'create':
+        create_file(path, content)
+    elif operation == 'delete':
+        delete_file(path)
+    elif operation == 'set-permission':
+        set_permission(path, permissions)
+
+
+cli.add_command(file_command)
 cli.add_command(group_command)
 cli.add_command(add_user_command)
 cli.add_command(delete_user_command)
